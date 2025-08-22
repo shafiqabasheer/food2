@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>shaa Express — Order Delicious Food Online</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="nav-left">
+      <a href="index.html" class="brand">🍔 shaa foodie <span>Express</span></a>
+    </div>
+    <nav class="nav-right">
+      <a href="index.html" class="active">Home</a>
+      <a href="menu.html">Menu</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+      <a href="cart.html" class="cart-link">🛒 Cart <span id="cart-count" class="badge">0</span></a>
+    </nav>
+    <button class="nav-toggle" aria-label="Toggle Menu">☰</button>
+  </header>
+
+  <!-- Mobile Drawer -->
+  <div class="mobile-drawer" id="mobileDrawer">
+    <a href="index.html" class="active">Home</a>
+    <a href="menu.html">Menu</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+    <a href="cart.html">🛒 Cart <span id="cart-count-mobile" class="badge">0</span></a>
+  </div>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container hero-inner">
+      <div class="hero-text">
+        <h1>Taste happiness. Delivered fast.</h1>
+        <p>Freshly made burgers, pizzas, pastas, desserts and more — delivered to your door in minutes.</p>
+        <div class="hero-cta">
+          <a href="menu.html" class="btn btn-primary">Browse Menu</a>
+          <a href="cart.html" class="btn btn-ghost">View Cart</a>
+        </div>
+        <div class="stats">
+          <div><strong>5000+</strong><span>Happy Customers</span></div>
+          <div><strong>30 min</strong><span>Average Delivery</span></div>
+          <div><strong>4.8★</strong><span>Top Rated</span></div>
+        </div>
+      </div>
+      <div class="hero-art">
+        <div class="hero-card">
+          <img src="hero-burger.jpg" alt="Burger"/>
+          <div class="hero-card-info">
+            <h3>Signature Cheese Burger</h3>
+            <p>₹120</p>
+          </div>
+        </div>
+        <div class="bubble one"></div>
+        <div class="bubble two"></div>
+        <div class="bubble three"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features container">
+    <div class="feature-card">
+      <div class="icon">🚀</div>
+      <h3>Lightning-fast Delivery</h3>
+      <p>Hot & fresh food at your doorstep, typically under 30 minutes.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">🧑‍🍳</div>
+      <h3>Chef-crafted Menu</h3>
+      <p>Premium ingredients, curated recipes, and consistent taste.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">🛡️</div>
+      <h3>Safe & Hygienic</h3>
+      <p>Strict hygiene protocols and tamper-proof packaging.</p>
+    </div>
+  </section>
+
+  <!-- Popular Picks -->
+  <section class="popular container">
+    <div class="section-head">
+      <h2>Popular Picks</h2>
+      <a class="link" href="menu.html">See full menu →</a>
+    </div>
+    <div class="grid">
+      <article class="card">
+        <img src="pepperonipizza.jpg" alt="Pizza"/>
+        <div class="card-body">
+          <h4>Margherita Pizza</h4>
+          <div class="price">₹250</div>
+          <button class="btn btn-sm btn-primary" onclick="addToCart('Margherita Pizza', 250)">Add to Cart</button>
+        </div>
+      </article>
+      <article class="card">
+        <img src="cheese burger.jpg" alt="Burger"/>
+        <div class="card-body">
+          <h4>Cheese Burger</h4>
+          <div class="price">₹120</div>
+          <button class="btn btn-sm btn-primary" onclick="addToCart('Cheese Burger', 120)">Add to Cart</button>
+        </div>
+      </article>
+      <article class="card">
+        <img src="fried chicken.jpg" alt="Fried Chicken"/>
+        <div class="card-body">
+          <h4>Fried Chicken</h4>
+          <div class="price">₹180</div>
+          <button class="btn btn-sm btn-primary" onclick="addToCart('Fried Chicken', 180)">Add to Cart</button>
+        </div>
+      </article>
+      <article class="card">
+        <img src="Cold Coffee.jpg" alt="Fresh Juice"/>
+        <div class="card-body">
+          <h4>Fresh Juice</h4>
+          <div class="price">₹90</div>
+          <button class="btn btn-sm btn-primary" onclick="addToCart('Fresh Juice', 90)">Add to Cart</button>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="brand">🍔 Foodie <span>Express</span></div>
+      <div class="links">
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="track.html">Track Order</a>
+        <a href="menu.html">Menu</a>
+      </div>
+      <p class="copy">© 2025 shaa Express • All rights reserved</p>
+    </div>
+  </footer>
+
+  <!-- Toast -->
+  <div id="toast" class="toast"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
+
+

@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menu - Foodie Express</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f8f4ef;
+      margin: 0;
+      padding: 0;
+      color: #5a4634;
+    }
+
+    /* Navbar */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 50px;
+      background: #fff;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    nav .logo {
+      font-size: 24px;
+      font-weight: bold;
+      color: #a67c52;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 25px;
+    }
+
+    nav ul li a {
+      color: #5a4634;
+      text-decoration: none;
+      font-weight: 500;
+      transition: 0.3s;
+    }
+
+    nav ul li a:hover {
+      color: #a67c52;
+    }
+
+    #cart-count {
+      background: #a67c52;
+      color: #fff;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 14px;
+    }
+
+    /* Hero Title */
+    h1 {
+      text-align: center;
+      margin: 30px 0;
+      font-size: 36px;
+      color: #a67c52;
+    }
+
+    /* Search */
+    .search-bar {
+      max-width: 500px;
+      margin: 0 auto 25px auto;
+      display: flex;
+      gap: 10px;
+    }
+    .search-bar input {
+      width: 100%;
+      padding: 12px 15px;
+      border-radius: 25px;
+      border: 1px solid #ccc;
+    }
+    .search-bar button {
+      padding: 12px 20px;
+      border-radius: 25px;
+      border: none;
+      background: #a67c52;
+      color: #fff;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .search-bar button:hover {
+      background: #8b623e;
+    }
+
+    /* Categories */
+    .categories {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+    }
+    .categories button {
+      padding: 10px 20px;
+      border-radius: 25px;
+      border: none;
+      background: #fff;
+      color: #5a4634;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .categories button.active,
+    .categories button:hover {
+      background: #a67c52;
+      color: #fff;
+    }
+
+    /* Menu Grid */
+    .menu-items {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 25px;
+      padding: 0 40px 50px;
+    }
+    .menu-item {
+      background: rgba(255,255,255,0.9);
+      border-radius: 20px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      transition: 0.3s;
+    }
+    .menu-item:hover {
+      transform: translateY(-5px);
+    }
+    .menu-item img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 15px;
+      margin-bottom: 12px;
+    }
+    .menu-item h3 {
+      margin: 8px 0;
+      font-size: 20px;
+      color: #5a4634;
+    }
+    .menu-item p {
+      font-size: 16px;
+      color: #a67c52;
+      margin-bottom: 12px;
+    }
+    .menu-item button {
+      padding: 10px 18px;
+      border-radius: 25px;
+      border: none;
+      background: #a67c52;
+      color: #fff;
+      cursor: pointer;
+      font-weight: 500;
+      transition: 0.3s;
+    }
+    .menu-item button:hover {
+      background: #8b623e;
+    }
+
+    footer {
+      background: #fff;
+      text-align: center;
+      padding: 15px;
+      font-size: 14px;
+      color: #5a4634;
+      border-top: 1px solid #eee;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav>
+    <div class="logo">🍔 Foodie Express</div>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="menu.html">Menu</a></li>
+      <li>
+        <a href="cart.html">Cart 🛒 <span id="cart-count">0</span></a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Hero -->
+  <h1>Our Menu</h1>
+
+  <!-- Search -->
+  <div class="search-bar">
+    <input type="text" id="search-input" placeholder="Search for food...">
+    <button onclick="searchItem()">Search</button>
+  </div>
+
+  <!-- Categories -->
+  <div class="categories">
+    <button class="active" onclick="filterCategory('all')">All</button>
+    <button onclick="filterCategory('burger')">Burgers</button>
+    <button onclick="filterCategory('pizza')">Pizza</button>
+    <button onclick="filterCategory('pasta')">Pasta</button>
+    <button onclick="filterCategory('sandwich')">Sandwiches</button>
+    <button onclick="filterCategory('dessert')">Desserts</button>
+    <button onclick="filterCategory('drink')">Drinks</button>
+  </div>
+
+  <!-- Menu Items -->
+  <div class="menu-items" id="menu-items">
+    <!-- Your items same as before -->
+    <div class="menu-item" data-category="burger">
+      <img src="cheese burger.jpg" alt="Cheese Burger">
+      <h3>Cheese Burger</h3>
+      <p>₹150</p>
+      <button onclick="addToCart('Cheese Burger', 150)">Add to Cart</button>
+    </div>
+
+    <div class="menu-item" data-category="burger">
+      <img src="chicken burger.jpg" alt="Chicken Burger">
+      <h3>Chicken Burger</h3>
+      <p>₹260</p>
+      <button onclick="addToCart('Chicken Burger', 260)">Add to Cart</button>
+    </div>
+
+    <div class="menu-item" data-category="pizza">
+      <img src="veggie pizza.jpg" alt="Veggie Pizza">
+      <h3>Veggie Pizza</h3>
+      <p>₹200</p>
+      <button onclick="addToCart('Veggie Pizza', 200)">Add to Cart</button>
+    </div>
+
+    <div class="menu-item" data-category="pizza">
+      <img src="pepperonipizza.jpg" alt="Pepperoni Pizza">
+      <h3>Pepperoni Pizza</h3>
+      <p>₹250</p>
+      <button onclick="addToCart('Pepperoni Pizza', 250)">Add to Cart</button>
+    </div>
+
+    <div class="menu-item" data-category="pasta">
+      <img src="Spaghetti Pasta.jpg" alt="Spaghetti Pasta">
+      <h3>Spaghetti Pasta</h3>
+      <p>₹250</p>
+      <button onclick="addToCart('Spaghetti Pasta', 160)">Add to Cart</button>
+    </div>
+
+    <div class="menu-item" data-category="pasta">
+      <img src="Alfredo Pasta.jpg" alt="Alfredo Pasta">
+      <h3>Alfredo Pasta</h3>
+      <p>₹280</p>
+      <button onclick="addToCart('Alfredo Pasta', 180)">Add to Cart</button>
+    </div>
+
+    <div class="menu-item" data-category="sandwich">
+      <img src="Grilled Sandwich.jpg" alt="Grilled Sandwich">
+      <h3>Grilled Sandwich</h3>
+      <p>₹90</p>
+      <button onclick="addToCart('Grilled Sandwich', 90)">Add to Cart</button>
+    </div>
+
+    <div class="menu-item" data-category="sandwich">
+      <img src="fried chicken.jpg" alt="fried chicken">
+      <h3>fried chicken</h3>
+      <p>₹290</p>
+      <button onclick="addToCart('fried chicken', 290)">Add to Cart</button>
+    </div>
+
+    <div class="menu-item" data-category="sandwich">
+      <img src="Veggie Sandwich.jpg" alt="Veggie Sandwich">
+      <h3>Veggie Sandwich</h3>
+      <p>₹80</p>
+      <button onclick="addToCart('Veggie Sandwich', 80)">Add to Cart</button>
+    </div>
+
+    <div class="menu-item" data-category="dessert">
+      <img src="Chocolate Cake.jpg" alt="Chocolate Cake">
+      <h3>Chocolate Cake</h3>
+      <p>₹100</p>
+      <button onclick="addToCart('Chocolate Cake', 100)">Add to Cart</button>
+    </div>
+
+    <div class="menu-item" data-category="dessert">
+      <img src="Vanilla Cupcake.jpg" alt="Vanilla Cupcake">
+      <h3>Vanilla Cupcake</h3>
+      <p>₹70</p>
+      <button onclick="addToCart('Vanilla Cupcake', 70)">Add to Cart</button>
+    </div>
+
+    <div class="menu-item" data-category="drink">
+      <img src="Ice Cream.jpg" alt="Ice Cream">
+      <h3>Ice Cream</h3>
+      <p>₹60</p>
+      <button onclick="addToCart('Ice Cream', 60)">Add to Cart</button>
+    </div>
+
+    <div class="menu-item" data-category="drink">
+      <img src="Cold Coffee.jpg" alt="Cold Coffee">
+      <h3>Cold Coffee</h3>
+      <p>₹190</p>
+      <button onclick="addToCart('Cold Coffee', 90)">Add to Cart</button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 Foodie Express | All rights reserved</p>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    function filterCategory(category) {
+      const items = document.querySelectorAll('.menu-item');
+      items.forEach(item => {
+        if(category === 'all' || item.dataset.category === category){
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+      const buttons = document.querySelectorAll('.categories button');
+      buttons.forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+    }
+
+    function searchItem() {
+      const input = document.getElementById('search-input').value.toLowerCase();
+      const items = document.querySelectorAll('.menu-item');
+      items.forEach(item => {
+        const name = item.querySelector('h3').innerText.toLowerCase();
+        if(name.includes(input)) {
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    }
+  </script>
+</body>
+</html>
+
+
+
+
+

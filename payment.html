@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="payment-container">
+    <h2>Secure Payment</h2>
+
+    <!-- Payment Options -->
+    <div class="payment-methods">
+      <label>
+        <input type="radio" name="method" checked> UPI
+      </label>
+      <label>
+        <input type="radio" name="method"> Credit / Debit Card
+      </label>
+      <label>
+        <input type="radio" name="method"> Net Banking
+      </label>
+      <label>
+        <input type="radio" name="method"> Cash on Delivery
+      </label>
+    </div>
+
+    <!-- UPI Section -->
+    <div class="payment-box" id="upi-box">
+      <p>Enter your UPI ID (example@upi)</p>
+      <input type="text" placeholder="example@upi">
+    </div>
+
+    <!-- Card Section -->
+    <div class="payment-box" id="card-box" style="display:none;">
+      <p>Card Number</p>
+      <input type="text" placeholder="XXXX-XXXX-XXXX-XXXX">
+      <p>Expiry Date</p>
+      <input type="text" placeholder="MM/YY">
+      <p>CVV</p>
+      <input type="password" placeholder="***">
+    </div>
+
+    <!-- Net Banking -->
+    <div class="payment-box" id="net-box" style="display:none;">
+      <p>Select Your Bank</p>
+      <select>
+        <option>SBI</option>
+        <option>HDFC</option>
+        <option>ICICI</option>
+        <option>Axis</option>
+        <option>Others...</option>
+      </select>
+    </div>
+
+    <button class="pay-btn">Proceed to Pay</button>
+  </div>
+
+  <script>
+    const radios = document.querySelectorAll('input[name="method"]');
+    const upi = document.getElementById('upi-box');
+    const card = document.getElementById('card-box');
+    const net = document.getElementById('net-box');
+
+    radios.forEach(radio => {
+      radio.addEventListener("change", () => {
+        upi.style.display = "none";
+        card.style.display = "none";
+        net.style.display = "none";
+
+        if (radios[0].checked) upi.style.display = "block";
+        else if (radios[1].checked) card.style.display = "block";
+        else if (radios[2].checked) net.style.display = "block";
+      });
+    });
+  </script>
+</body>
+</html>
+
+

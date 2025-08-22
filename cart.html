@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cart - shaa Express</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Page-specific polish (keeps your modern theme) */
+    .cart-wrap { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
+    @media (max-width: 900px){ .cart-wrap{ grid-template-columns: 1fr; } }
+    .cart-card { padding: 20px; border-radius: 18px; background: rgba(255,255,255,0.16); backdrop-filter: blur(16px); box-shadow: 0 10px 28px rgba(0,0,0,.18); }
+    .cart-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+    .empty { text-align:center; padding:40px 20px; opacity:.9; }
+    .cart-table { width:100%; border-collapse: collapse; }
+    .cart-table th, .cart-table td { padding:14px 10px; border-bottom: 1px solid rgba(255,255,255,0.18); text-align:left; }
+    .cart-item { display:flex; gap:12px; align-items:center; }
+    .cart-item img { width:64px; height:64px; object-fit:cover; border-radius:12px; }
+    .qty { display:flex; align-items:center; gap:8px; }
+    .qty button { padding:6px 10px; border-radius:10px; }
+    .danger { background: linear-gradient(135deg, #ff6a88, #ff99ac); color:#222; }
+    .outline { background: transparent; border:1px solid rgba(255,255,255,0.35); color:#fff; }
+    .summary { display:flex; flex-direction:column; gap:14px; }
+    .row { display:flex; justify-content:space-between; align-items:center; }
+    .total { font-size:1.25rem; font-weight:700; }
+    .code { display:flex; gap:10px; }
+    .code input { flex:1; }
+    .pill { border-radius: 999px; }
+    .muted { opacity:.85; font-size: 0.95rem; }
+    .actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:8px; }
+    .badge { background:#a67c52; color:#fff; padding:2px 8px; border-radius:12px; font-size:13px; }
+    .note { font-size:.9rem; opacity:.8; }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav>
+    <div class="logo">🍔 shaa Express</div>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="menu.html">Menu</a></li>
+      <li>
+        <a href="cart.html">Cart 🛒 <span id="cart-count" class="badge">0</span></a>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="container" style="margin-top:100px; width:95%; max-width:1200px;">
+    <h1 class="page-title">Your Cart</h1>
+
+    <div id="empty-state" class="card cart-card empty" style="display:none;">
+      <h3>Your cart is empty 😶</h3>
+      <p class="note">Explore our menu and add your favorites!</p>
+      <div style="margin-top:14px;">
+        <a href="menu.html"><button class="pill">Browse Menu</button></a>
+      </div>
+    </div>
+
+    <div id="cart-wrap" class="cart-wrap" style="display:none;">
+      <!-- Left: Items -->
+      <div class="card cart-card">
+        <div class="cart-header">
+          <h3>Items in Cart</h3>
+          <button class="outline pill" id="clear-cart">Clear Cart</button>
+        </div>
+
+        <div class="muted note">Tip: Use + / – to change quantity. Click Remove to delete an item.</div>
+
+        <table class="cart-table" id="cart-table">
+          <thead>
+            <tr class="muted">
+              <th>Item</th>
+              <th>Price</th>
+              <th>Qty</th>
+              <th style="text-align:right;">Total</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="cart-body">
+            <!-- JS fills rows -->
+          </tbody>
+        </table>
+
+        <div class="actions">
+          <a href="menu.html"><button class="outline pill">← Continue Shopping</button></a>
+        </div>
+      </div>
+
+      <!-- Right: Summary -->
+      <div class="card cart-card">
+        <h3>Order Summary</h3>
+
+        <div class="summary" style="margin-top:10px;">
+          <div class="code">
+            <input id="coupon" type="text" placeholder="Have a coupon? (e.g., FOODIE10, FREESHIP)"/>
+            <button id="apply-coupon" class="pill">Apply</button>
+          </div>
+
+          <div class="row"><span class="muted">Subtotal</span><span id="subtotal">₹0</span></div>
+          <div class="row"><span class="muted">Discount</span><span id="discount">- ₹0</span></div>
+          <div class="row"><span class="muted">Tax (5%)</span><span id="tax">₹0</span></div>
+          <div class="row"><span class="muted">Delivery</span><span id="delivery">₹0</span></div>
+          <hr style="border-color: rgba(255,255,255,0.25);" />
+          <div class="row total"><span>Total</span><span id="grand">₹0</span></div>
+
+          <div class="actions" style="margin-top:6px;">
+            <a href="checkout.html"><button class="pill" id="checkout-btn">Checkout</button></a>
+          </div>
+          <p class="note">Free delivery on orders ₹500+ (or use coupon <b>FREESHIP</b>)</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>© 2025 shaa Express • All rights reserved</footer>
+
+  <script>
+    // ---------- Helpers ----------
+    const INR = (n) => "₹" + (Math.round(n * 100) / 100).toLocaleString("en-IN", { minimumFractionDigits: 0 });
+
+    function getCart() {
+      try { return JSON.parse(localStorage.getItem("cart")) || []; }
+      catch { return []; }
+    }
+    function setCart(data) {
+      localStorage.setItem("cart", JSON.stringify(data));
+    }
+    function badgeCount() {
+      const cart = getCart();
+      const count = cart.reduce((a,c)=> a + (c.qty || 1), 0);
+      const el = document.getElementById("cart-count");
+      if (el) el.textContent = count;
+    }
+
+    // ---------- Render ----------
+    function renderCart() {
+      const cart = getCart();
+      const empty = document.getElementById("empty-state");
+      const wrap = document.getElementById("cart-wrap");
+      const body = document.getElementById("cart-body");
+
+      if (!cart.length) {
+        empty.style.display = "block";
+        wrap.style.display = "none";
+        badgeCount();
+        return;
+      }
+
+      empty.style.display = "none";
+      wrap.style.display = "grid";
+      body.innerHTML = "";
+
+      cart.forEach((item, idx) => {
+        const qty = item.qty || 1;
+        const price = Number(item.price) || 0;
+        const line = price * qty;
+        const img = item.img || "https://dummyimage.com/300x200/efefef/333&text=Food+Item";
+
+        body.insertAdjacentHTML("beforeend", `
+          <tr>
+            <td>
+              <div class="cart-item">
+                <img src="${img}" alt="${item.name}">
+                <div>
+                  <div style="font-weight:600">${item.name}</div>
+                  <div class="note">Customizable • Fresh</div>
+                </div>
+              </div>
+            </td>
+            <td>${INR(price)}</td>
+            <td>
+              <div class="qty">
+                <button class="outline" onclick="updateQty(${idx}, -1)">−</button>
+                <span style="min-width:24px;text-align:center;">${qty}</span>
+                <button onclick="updateQty(${idx}, 1)">+</button>
+              </div>
+            </td>
+            <td style="text-align:right;">${INR(line)}</td>
+            <td style="text-align:right;">
+              <button class="danger pill" onclick="removeItem(${idx})">Remove</button>
+            </td>
+          </tr>
+        `);
+      });
+
+      updateSummary();
+      badgeCount();
+    }
+
+    // ---------- Summary & Coupons ----------
+    function currentTotals() {
+      const cart = getCart();
+      const subtotal = cart.reduce((a,c)=> a + (Number(c.price)||0) * (c.qty||1), 0);
+      // delivery: ₹40 if subtotal < 500 else 0 (can be overridden by FREESHIP)
+      let delivery = subtotal >= 500 ? 0 : 40;
+      const coupon = (localStorage.getItem("coupon") || "").trim().toUpperCase();
+      let discount = 0;
+
+      if (coupon === "FOODIE10") discount = subtotal * 0.10;
+      if (coupon === "FOODIE20") discount = subtotal * 0.20;
+      if (coupon === "FREESHIP") delivery = 0;
+
+      const taxable = Math.max(0, subtotal - discount);
+      const tax = taxable * 0.05; // 5% GST (demo)
+      const grand = taxable + tax + delivery;
+
+      return { subtotal, discount, tax, delivery, grand, coupon };
+    }
+
+    function updateSummary() {
+      const { subtotal, discount, tax, delivery, grand } = currentTotals();
+      document.getElementById("subtotal").textContent = INR(subtotal);
+      document.getElementById("discount").textContent = "- " + INR(discount);
+      document.getElementById("tax").textContent = INR(tax);
+      document.getElementById("delivery").textContent = INR(delivery);
+      document.getElementById("grand").textContent = INR(grand);
+      // Save total for checkout/payment
+      localStorage.setItem("cart_total", String(Math.round(grand)));
+    }
+
+    // ---------- Actions ----------
+    function updateQty(index, delta) {
+      const cart = getCart();
+      if (!cart[index]) return;
+      const next = (cart[index].qty || 1) + delta;
+      if (next <= 0) { cart.splice(index,1); }
+      else { cart[index].qty = next; }
+      setCart(cart);
+      renderCart();
+    }
+
+    function removeItem(index) {
+      const cart = getCart();
+      cart.splice(index,1);
+      setCart(cart);
+      renderCart();
+    }
+
+    document.getElementById("clear-cart").addEventListener("click", () => {
+      if (confirm("Clear your cart?")) {
+        setCart([]);
+        localStorage.removeItem("coupon");
+        renderCart();
+      }
+    });
+
+    document.getElementById("apply-coupon").addEventListener("click", () => {
+      const code = (document.getElementById("coupon").value || "").trim().toUpperCase();
+      if (!code) { alert("Enter a coupon code"); return; }
+      const valid = ["FOODIE10","FOODIE20","FREESHIP"];
+      if (!valid.includes(code)) { alert("Invalid coupon"); return; }
+      localStorage.setItem("coupon", code);
+      updateSummary();
+      alert("Coupon applied: " + code);
+    });
+
+    // Pass cart to checkout
+    document.getElementById("checkout-btn").addEventListener("click", () => {
+      const cart = getCart();
+      if (!cart.length) {
+        alert("Your cart is empty!");
+        return;
+      }
+      // Persist for next page
+      localStorage.setItem("cart_for_checkout", JSON.stringify(cart));
+      // (link already points to checkout.html)
+    });
+
+    // ---------- Init ----------
+    (function init(){
+      // Ensure every item has qty
+      const cart = getCart().map(it => ({ ...it, qty: it.qty ? Number(it.qty) : 1 }));
+      setCart(cart);
+      badgeCount();
+      renderCart();
+      // Prefill coupon if any
+      const saved = (localStorage.getItem("coupon")||"");
+      if (saved) document.getElementById("coupon").value = saved;
+    })();
+  </script>
+</body>
+</html>
+
+
+
