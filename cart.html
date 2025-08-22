@@ -192,7 +192,7 @@
       const cart = getCart();
       const subtotal = cart.reduce((a,c)=> a + (Number(c.price)||0) * (c.qty||1), 0);
       // delivery: ₹40 if subtotal < 500 else 0 (can be overridden by FREESHIP)
-      let delivery = subtotal >= 500 ? 0 : 40;
+      let delivery = subtotal >= 1000 ? 0 : 40;
       const coupon = (localStorage.getItem("coupon") || "").trim().toUpperCase();
       let discount = 0;
 
